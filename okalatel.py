@@ -634,8 +634,7 @@ def main() -> None:
     application.add_handler(conv_handler)
     
     # اجرای ربات
-    port = int(os.getenv('PORT', '10000'))  # پورت پیش‌فرض 8443
-    application.run_polling(allowed_updates=Update.ALL_TYPES, port=port)
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
     main()
