@@ -20,7 +20,6 @@ import logging
 import random
 import time
 import os
-import pyautogui
 
 # تنظیمات پیشرفته لاگ
 logging.basicConfig(
