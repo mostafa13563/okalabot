@@ -12,10 +12,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.edge.service import Service
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.edge.options import Options as EdgeOptions
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
 import logging
 import random
 import time
@@ -202,20 +202,20 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # اگر پیام "شروع" یا "/start" باشد
     if user_phone in ["شروع", "/start"]:
         try:
-            # تنظیمات پیشرفته Edge
-            edge_options = EdgeOptions()
-            edge_options.add_argument("--disable-geolocation")
-            edge_options.add_argument("--start-maximized")
-            edge_options.add_argument("--disable-blink-features=AutomationControlled")
-            edge_options.add_argument("--inprivate")
-            edge_options.add_argument("--headless")  # اضافه کردن حالت headless
-            edge_options.add_argument("--no-sandbox")  # اضافه کردن گزینه no-sandbox
-            edge_options.add_argument("--disable-dev-shm-usage")  # اضافه کردن گزینه disable-dev-shm-usage
-            edge_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0")
+            # تنظیمات پیشرفته Chrome
+            chrome_options = ChromeOptions()
+            chrome_options.add_argument("--disable-geolocation")
+            chrome_options.add_argument("--start-maximized")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_argument("--incognito")
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
             
             # استفاده از webdriver-manager با آخرین نسخه
-            service = Service(EdgeChromiumDriverManager().install())
-            driver = webdriver.Edge(service=service, options=edge_options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
 
             # ذخیره درایور برای کاربر
             user_data[user.id] = {
@@ -233,7 +233,6 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
                 raise Exception(f"خطا در بارگذاری صفحه اوکالا: {str(e)}")
 
             await update.message.reply_text(
-                # "✅ سایت اوکالا با موفقیت باز شد.\n"
                 "✅",
                 "لطفاً شماره موبایل خود را ارسال کنید:",
                 reply_markup=OPERATION_KEYBOARD_MARKUP,
@@ -534,20 +533,20 @@ async def get_code(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         
         # راه‌اندازی مجدد مرورگر
         try:
-            # تنظیمات پیشرفته Edge
-            edge_options = EdgeOptions()
-            edge_options.add_argument("--disable-geolocation")
-            edge_options.add_argument("--start-maximized")
-            edge_options.add_argument("--disable-blink-features=AutomationControlled")
-            edge_options.add_argument("--inprivate")
-            edge_options.add_argument("--headless")  # اضافه کردن حالت headless
-            edge_options.add_argument("--no-sandbox")  # اضافه کردن گزینه no-sandbox
-            edge_options.add_argument("--disable-dev-shm-usage")  # اضافه کردن گزینه disable-dev-shm-usage
-            edge_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0")
+            # تنظیمات پیشرفته Chrome
+            chrome_options = ChromeOptions()
+            chrome_options.add_argument("--disable-geolocation")
+            chrome_options.add_argument("--start-maximized")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_argument("--incognito")
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
             
             # استفاده از webdriver-manager با آخرین نسخه
-            service = Service(EdgeChromiumDriverManager().install())
-            driver = webdriver.Edge(service=service, options=edge_options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
 
             # ذخیره درایور جدید برای کاربر
             user_data[user.id]["driver"] = driver
@@ -635,7 +634,8 @@ def main() -> None:
     application.add_handler(conv_handler)
     
     # اجرای ربات
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    port = int(os.getenv('PORT', '10000'))  # پورت پیش‌فرض 8443
+    application.run_polling(allowed_updates=Update.ALL_TYPES, port=port)
 
 if __name__ == "__main__":
     main()
